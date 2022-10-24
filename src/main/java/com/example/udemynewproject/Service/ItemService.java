@@ -17,4 +17,23 @@ public class ItemService {
         return itemRepo.fetchAllItems();
     }
 
+    public void addItem(Item i){
+        itemRepo.addItem(i);
+    }
+
+    public void deleteItem(int id){
+        itemRepo.deleteItem(id);
+    }
+
+    public Item findItemById(int id){
+        return itemRepo.findItemById(id);
+
+    }
+
+    public void updateItem(Item i){
+        itemRepo.updateItem(i);
+    }
+
 }
+
+

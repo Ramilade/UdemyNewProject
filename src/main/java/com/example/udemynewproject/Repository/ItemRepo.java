@@ -1,6 +1,10 @@
 package com.example.udemynewproject.Repository;
 
 import com.example.udemynewproject.Model.Item;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -10,16 +14,37 @@ import java.util.List;
 @Repository
 public class ItemRepo {
 
+    @Autowired
+    JdbcTemplate template;
+
     public List<Item> fetchAllItems(){
 
+        String sql = "SELECT * FROM item";
+        RowMapper<Item> rowMapper = new BeanPropertyRowMapper<>(Item.class);
 
-        //Her laver man normalt SQL forbindelsen
-        List<Item> items = new ArrayList<>();
-        items.add(new Item("Computer", 100));
-        items.add(new Item("Laptop", 150));
-        items.add(new Item("iPhone", 125));
+        return template.query(sql,rowMapper);
 
-        return items;
+    }
+
+    public void addItem(Item i){
+        String sql = "INSERT INTO item (id, name, price) VALUES (?,?,?)";
+        template.update(sql, i.getId(), i.getName(), i.getPrice());
+    }
+
+    public void deleteItem(int id){
+        String sql = "DELETE FROM item WHERE id=?";
+        template.update(sql, id);
+    }
+
+    public Item findItemById(int id) {
+        String sql = "SELECT * FROM item WHERE id=?";
+        RowMapper<Item> rowMapper = new BeanPropertyRowMapper<>(Item.class);
+        return template.queryForObject(sql, rowMapper, id);
+    }
+
+    public void updateItem(Item i){
+        String sql = "UPDATE item SET name=?, price=? WHERE id=?";
+        template.update(sql, i.getName(), i.getPrice(), i.getId());
     }
 
 
